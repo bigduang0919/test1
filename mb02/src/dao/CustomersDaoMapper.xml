@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "mybatis-3-mapper.dtd" >
+<mapper namespace="dao.CustomersDao">
+  <select id="query" resultType="entity.Customers">
+  	 select * from customers where 1=1
+  	 <if test="param1 !=null and param1!=''">
+  	 	and customerName like concat('%',#{param1},'%')
+  	 </if>
+  	 <if test="param2 !=null and param2!=''">
+  	 	and country=#{param2}
+  	 </if>
+  	 <if test="param3 !=null">
+  	 	and salesRepEmployeeNumber=#{param3}
+  	 </if>
+  </select>
+  <select id="query2"  parameterType="entity.Customers"  resultType="entity.Customers">
+  	select * from customers where 1=1
+  	 <if test="customerName !=null and customerName''">
+  	 	and customerName like concat('%',#{customerName},'%')
+  	 </if>
+  	 <if test="country !=null and country!=''">
+  	 	and country=#{param2}
+  	 </if>
+  	 <if test="salesRepEmployeeNumber !=null">
+  	 	and salesRepEmployeeNumber=#{param3}
+  	 </if>
+  </select>
+  <insert id="add" parameterType="entity.Ts" useGeneratedKeys="true">
+		<selectKey keyColumn="tid" keyProperty="tid" order="BEFORE" resultType="entity.Ts">
+			select max(tid)+1 tid from test
+		</selectKey>
+		insert into test
+		<trim prefix="(tid," suffix=")" suffixOverrides="," >
+			<if test="tname !=null">
+				tname,
+			</if>
+			<if test="info !=null">
+				info,
+			</if>
+		</trim>
+		<trim prefix="values(" suffix=")" suffixOverrides=",">
+			#{tid},
+			<if test="tname !=null">
+				#{tname},
+			</if>
+			<if test="info !=null">
+				#{info},
+			</if>
+		</trim>
+  </insert>
+  <delete id="del">
+  	delete from test where tid in
+ 	<foreach collection="list" open="(" close=")" separator="," item="id" index="index">
+ 		#{id}
+ 	</foreach>
+  </delete>
+  <!-- 一个参数 -->
+  <select id="query3" parameterType="String" resultType="entity.Customers">
+		select * from customers
+		<where>
+		<if test="_parameter != null and _parameter != '' ">
+			 customerName like concat('%',#{param1},'%')
+		</if>
+		</where>
+  </select>
+  <update id="update">
+  	update customers 
+		<if test="_parameter != null">
+			<set>
+				<if test="customerName != null">
+					customerName=#{customerName},
+				</if>
+				<if test="contactLastName != null">
+					contactLastName=#{contactLastName},
+				</if>
+				<if test="contactFirstName != null">
+					contactFirstName=#{contactFirstName},
+				</if>
+				<if test="phone != null">
+					phone=#{phone},
+				</if>
+				<if test="addressLine1 != null">
+					addressLine1=#{addressLine1},
+				</if>
+				<if test="addressLine2 != null">
+					addressLine2=#{addressLine2},
+				</if>
+				<if test="city != null">
+					city=#{city},
+				</if>
+				<if test="state != null">
+					state=#{state},
+				</if>
+				<if test="postalCode != null">
+					postalCode=#{postalCode},
+				</if>
+				<if test="country != null">
+					country=#{country},
+				</if>
+				<if test="salesRepEmployeeNumber != null">
+					salesRepEmployeeNumber=#{salesRepEmployeeNumber},
+				</if>
+				<if test="creditLimit != null">
+					creditLimit=#{creditLimit}, 
+				</if>
+				customerNumber=customerNumber
+			</set>
+			where customerNumber = #{customerNumber}
+		</if>
+		<if test="_parameter == null">
+			set customerNumber=customerNumber limit 1
+		</if>
+  </update>
+  <insert id="add1" parameterType="entity.Customers">
+		insert into customers
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="customerNumber != null">
+				customerNumber,
+			</if>
+			<if test="customerName != null">
+				customerName,
+			</if>
+			<if test="phone != null">
+				phone
+			</if>
+		</trim>
+		<trim prefix="values(" suffix=")" suffixOverrides=",">
+			<if test="customerNumber != null">
+				#{customerNumber},
+			</if>
+			<if test="customerName != null">
+				#{customerName},
+			</if>
+			<if test="phone != null">
+				#{phone}
+			</if>
+		</trim>
+	</insert>
+</mapper>
